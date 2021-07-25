@@ -25,6 +25,8 @@ If you want to use redis as cache:
 [Run `docker run --name redis-usdb -p "yourPort":6379 -d redis` to connect redis to port "yourPort".
 Set cache_port in config.json to yourPort.]
 
+** default cache_port is -1 which show you want to use map as cache in your app.
+
 Build and run **main.go** file(`go run main.go`) to start the app.
 
 (default port is 8080 but if this port of your system is busy you can change it in config.json(listener_port))
