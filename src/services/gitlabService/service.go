@@ -11,14 +11,6 @@ var (
 	cache cachePkg.Cache
 )
 
-type resp struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
-	Type string `json:"type"`
-	Path string `json:"path"`
-	Mode string `json:"mode"`
-}
-
 func SetCache(port int) {
 	cache = cachePkg.GetNewCache(port)
 }
