@@ -1,6 +1,8 @@
 package cache
 
-import "errors"
+import (
+	"errors"
+)
 
 type InMemoryCache struct {
 	MCache map[string]string

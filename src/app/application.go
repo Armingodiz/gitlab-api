@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/ArminGodiz/gitlab-api/src/services/gitlabService"
 	"github.com/gin-gonic/gin"
 )
 
@@ -11,6 +12,7 @@ var (
 
 func StartApplication() {
 	mapUrls()
+	gitlabService.SetCache(-1)
 	err := router.Run(":8080")
 	if err != nil {
 		panic(err)

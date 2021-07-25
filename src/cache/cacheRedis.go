@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/redis"
+	"github.com/go-redis/redis/v8"
 )
 
 type RedisCache struct {
