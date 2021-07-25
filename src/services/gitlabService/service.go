@@ -1,16 +1,26 @@
 package gitlabService
 
 import (
-	cachPkg "github.com/ArminGodiz/gitlab-api/src/cache"
+	"errors"
+	"fmt"
+	cachePkg "github.com/ArminGodiz/gitlab-api/src/cache"
 	"net/http"
 )
 
 var (
-	cache cachPkg.Cache
+	cache cachePkg.Cache
 )
 
+type resp struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
+	Type string `json:"type"`
+	Path string `json:"path"`
+	Mode string `json:"mode"`
+}
+
 func SetCache(port int) {
-	cache = cachPkg.GetNewCache(port)
+	cache = cachePkg.GetNewCache(port)
 }
 
 func SaveToken(id string, token string) error {
@@ -21,8 +31,10 @@ func GetDetails(projId, uid string) (*http.Response, error) {
 	// check token existence
 	token, err := cache.Get(uid)
 	if err != nil {
-		return nil, nil
+		fmt.Println(err)
+		return nil, errors.New("token not found")
 	}
-	resp, err2 := http.Get("https://gitlab.com/api/v4/projects/" + projId + "/repository/tree?access_token=" + token)
+	url := "https://gitlab.com/api/v4/projects/" + projId + "/repository/tree?access_token=" + token
+	resp, err2 := http.Get(url)
 	return resp, err2
 }
