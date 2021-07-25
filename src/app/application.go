@@ -3,6 +3,7 @@ package app
 import (
 	"github.com/ArminGodiz/gitlab-api/src/services/gitlabService"
 	"github.com/gin-gonic/gin"
+	"strconv"
 )
 
 var (
@@ -12,8 +13,9 @@ var (
 
 func StartApplication() {
 	mapUrls()
-	gitlabService.SetCache(-1)
-	err := router.Run(":8080")
+	config := GetConfig()
+	gitlabService.SetCache(config.CachePort)
+	err := router.Run(":" + strconv.Itoa(config.ListenerPort))
 	if err != nil {
 		panic(err)
 	}
