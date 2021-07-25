@@ -1,15 +1,17 @@
 package gitlabController
 
 import (
+	"bytes"
 	"errors"
+	"fmt"
 	gitService "github.com/ArminGodiz/gitlab-api/src/services/gitlabService"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 type postData struct {
-	userId            string `json:"userId"`
-	gitlabAccessToken string `json:"gitlabAccessToken"`
+	UserId            string `json:"userId"`
+	GitlabAccessToken string `json:"gitlabAccessToken"`
 }
 
 func SetToken(c *gin.Context) {
@@ -18,7 +20,7 @@ func SetToken(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errors.New("invalid json body"))
 		return
 	}
-	if err := gitService.SaveToken(data.userId, data.gitlabAccessToken); err != nil {
+	if err := gitService.SaveToken(data.UserId, data.GitlabAccessToken); err != nil {
 		c.JSON(http.StatusInternalServerError, errors.New("error in saving cache"))
 	}
 	c.JSON(http.StatusOK, nil)
@@ -26,15 +28,18 @@ func SetToken(c *gin.Context) {
 
 func GetDetails(c *gin.Context) {
 	projId := c.Param("id")
-	values, _ := c.Request.Header["userId"]
-	if len(values) == 0 {
-		c.JSON(http.StatusBadRequest, nil)
-		return
-	}
-	resp, err := gitService.GetDetails(projId, values[0])
+	val := c.Request.Header.Get("userId")
+	resp, err := gitService.GetDetails(projId, val)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, nil)
 		return
 	}
-	c.JSON(http.StatusOK, resp)
+	buf := new(bytes.Buffer)
+	_, err2 := buf.ReadFrom(resp.Body)
+	if err2 != nil {
+		c.Status(400)
+		return
+	}
+	c.Status(200)
+	fmt.Fprint(c.Writer, buf.String())
 }
